@@ -1,4 +1,4 @@
-import logo from '../assets/images/logo.svg';
+
 import '../styles/App.css';
 import React, {useState} from "react";
 import TopBar from "./TopBar";
@@ -6,21 +6,33 @@ import Main from "./Main"
 import {TOKEN_KEY} from "../constants";
 
 function App() {
-    // a group hook
+    // this is second component, down there is the topbar and the main component
+
+    // prepare a hook prop, which is a use state
     const [isLoggedIn, setIsLoggedIn] = useState(
-        localStorage.getItem(TOKEN_KEY) ? true : false
+        // isLoggedIn is a state value, setIsLoggedIn is a function that set that state
+        !!localStorage.getItem(TOKEN_KEY)
     )
+
+
+
+    // the call back function for the topbar component
     const logout = () => {
         console.log('logout')
         localStorage.removeItem(TOKEN_KEY)
         setIsLoggedIn(false)
     }
+
+    // the call back function for the main component
     const loggedIn = (token) => {
         if (token) {
             localStorage.setItem(TOKEN_KEY, token)
             setIsLoggedIn(true)
         }
     }
+
+
+
     return (
         <div className="App">
             <TopBar isLoggedIn={isLoggedIn}
