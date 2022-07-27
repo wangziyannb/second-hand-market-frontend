@@ -59,8 +59,7 @@ class ProductReleaseButton extends Component {
                                 this.setState({confirmLoading: false});
                             }
                         })
-                        .catch((err) => {
-                            console.log("Upload image/video failed: ", err.message);
+                        .catch(() => {
                             message.error("Failed to release product");
                             this.setState({confirmLoading: false});
                         });

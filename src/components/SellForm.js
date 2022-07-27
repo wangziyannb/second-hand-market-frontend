@@ -1,4 +1,3 @@
-//这个组件是post界面的上传组件
 import React, {forwardRef} from "react";
 import {Form, Upload, Input} from "antd";
 import {InboxOutlined} from "@ant-design/icons";

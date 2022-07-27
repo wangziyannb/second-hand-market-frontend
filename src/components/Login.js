@@ -3,7 +3,6 @@ import {Form, Input, Button, message} from "antd";
 import {UserOutlined, LockOutlined} from "@ant-design/icons";
 import {Link} from "react-router-dom";
 import axios from "axios";
-
 import {BASE_URL} from "../constants";
 
 function Login(props) {
@@ -11,7 +10,7 @@ function Login(props) {
 
     const onFinish = (values) => {
         const {Email, UserPwd} = values;
-        //构造一个config
+
         const opt = {
             method: "POST",
             url: `${BASE_URL}/signin`,

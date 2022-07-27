@@ -1,11 +1,10 @@
 import React from "react";
 import {Route, Switch, Redirect} from "react-router";
-
 import Login from "./Login";
 import Register from "./Register";
 import Home from "./Home";
 import ProductDetail from "./ProductDetail";
-
+import PersonalProfile from "./PersonalProfile";
 
 function Main(props) {
 
@@ -18,14 +17,20 @@ function Main(props) {
     }
 
     const showHome = () => {
-        return isLoggedIn ? <Home/> : <Redirect to="/login"/>
+        return props.showProfile ? (<Redirect to="/profile"/>) :
+            isLoggedIn ? <Home logout={props.logout}/> : <Redirect to="/login"/>
     }
 
     const ProductDetail = () => {
-
         return <ProductDetail/>
     }
 
+    const GotoProfile = () => {
+        return !props.showProfile ? (<Redirect to="/home"/>) :
+            isLoggedIn
+                ? <PersonalProfile setShowProfile={props.setShowProfile}/>
+                : (<Login handleLoggedIn={handleLoggedIn}/>)
+    }
     return (
         <div className="main">
             <Switch>
@@ -35,6 +40,7 @@ function Main(props) {
                 <Route path="/register" component={Register}/>
                 <Route path="/home" component={showHome}/>
                 <Route path="/product" component={ProductDetail}/>
+                <Route path="/profile" component={GotoProfile}/>
             </Switch>
         </div>
 
