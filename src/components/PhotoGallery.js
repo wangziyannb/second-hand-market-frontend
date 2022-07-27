@@ -99,7 +99,6 @@ function PhotoGallery(props) {
                 enableImageSelection={false}
                 backdropClosesModal={true}
                 currentImageWillChange={onCurrentImageChange}
-                // 下面这个给图片加图标，很酷，可以删除的按钮
                 customControls={[
                     <div><button
                         style={{marginTop: "10px", marginLeft: "5px"}}
@@ -124,10 +123,9 @@ function PhotoGallery(props) {
     );
 }
 
-// 这一段是对数据类型进行校验
+// data checking
 PhotoGallery.propTypes = {
     images: PropTypes.arrayOf(
-        //其中是一个class，包含一下attribute
         PropTypes.shape({
             user: PropTypes.string.isRequired,
             caption: PropTypes.string.isRequired,

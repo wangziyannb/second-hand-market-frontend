@@ -1,17 +1,17 @@
 //这个组件是post界面的上传组件
-import React, { forwardRef } from "react";
-import { Form, Upload, Input } from "antd";
-import { InboxOutlined } from "@ant-design/icons";
+import React, {forwardRef} from "react";
+import {Form, Upload, Input} from "antd";
+import {InboxOutlined} from "@ant-design/icons";
 
-//是因为要让父组件进行defer，所以用了一个回调函数进行包裹。
+
 export const SellForm = forwardRef((props, formRef) => {
     const formItemLayout = {
-        labelCol: { span: 6 },
-        wrapperCol: { span: 14 }
+        labelCol: {span: 6},
+        wrapperCol: {span: 14}
     };
 
     const normFile = (e) => {
-        //可以上传超过一个文件
+        //can upload more than one file
         console.log("Upload event:", e);
         if (Array.isArray(e)) {
             return e;
@@ -32,7 +32,7 @@ export const SellForm = forwardRef((props, formRef) => {
                     }
                 ]}
             >
-                <Input />
+                <Input/>
             </Form.Item>
 
             <Form.Item
@@ -45,7 +45,7 @@ export const SellForm = forwardRef((props, formRef) => {
                     }
                 ]}
             >
-                <Input />
+                <Input/>
             </Form.Item>
 
             <Form.Item
@@ -58,7 +58,7 @@ export const SellForm = forwardRef((props, formRef) => {
                     }
                 ]}
             >
-                <Input />
+                <Input/>
             </Form.Item>
 
             <Form.Item
@@ -71,7 +71,7 @@ export const SellForm = forwardRef((props, formRef) => {
                     }
                 ]}
             >
-                <Input />
+                <Input/>
             </Form.Item>
 
             <Form.Item
@@ -84,7 +84,7 @@ export const SellForm = forwardRef((props, formRef) => {
                     }
                 ]}
             >
-                <Input />
+                <Input/>
             </Form.Item>
 
             <Form.Item label="Dragger">
@@ -100,10 +100,10 @@ export const SellForm = forwardRef((props, formRef) => {
                         }
                     ]}
                 >
-                    {/*before upload 是阻止自动上传*/}
+                    {/*before upload prevent upload automatically*/}
                     <Upload.Dragger name="files" beforeUpload={() => false}>
                         <p className="ant-upload-drag-icon">
-                            <InboxOutlined />
+                            <InboxOutlined/>
                         </p>
                         <p className="ant-upload-text">
                             Click or drag file to this area to upload

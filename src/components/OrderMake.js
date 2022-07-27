@@ -12,14 +12,14 @@ class OrderMake extends Component {
     };
 
     showModal = () => {
-        //要show就visible就显示为ture
+        // form show state
         this.setState({
             visible: true
         });
     };
 
     handleOk = () => {
-        //指上传做的事情
+        // onclick from submitting form
         this.setState({
             confirmLoading: true
         });
@@ -64,7 +64,7 @@ class OrderMake extends Component {
                     onCancel={this.handleCancel}
                 >
                     <BuyForm ref={(refInstance) => (this.postForm = refInstance)}/>
-                    {/*    这里必需要给post form组件那个Ref instance*/}
+                    {/*    Here need to give the post form component the Ref instance*/}
                 </Modal>
             </div>
         );

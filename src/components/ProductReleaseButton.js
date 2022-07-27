@@ -94,7 +94,6 @@ class ProductReleaseButton extends Component {
                     onCancel={this.handleCancel}
                 >
                     <SellForm ref={(refInstance) => (this.postForm = refInstance)}/>
-                    {/*    这里必需要给post form组件那个Ref instance*/}
                 </Modal>
             </div>
         );

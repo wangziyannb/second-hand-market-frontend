@@ -36,10 +36,7 @@ function ProductDetail(props) {
     const [confirmLoading] = useState(false);
 
     const fetchPost = () => {
-        //This is to go and get my search results for something that needs to be this search type
-
-        //The first concern is the type of search. What is the search ah? From there, fill in the different this url
-
+        // define the opt and send the request
         const opt = {
             method: "GET",
             url: `${BASE_URL}/product/${productId}`,
@@ -204,14 +201,6 @@ function ProductDetail(props) {
                     </Box>
                 </Box>
             </Box>)
-            // <Row className='main'>
-            //     <Col span={10} className="left-side">
-            //
-            //     </Col>
-            //     <Col span={16} className="right-side">
-            //
-            //     </Col>
-            // </Row>
         }
     }
 
