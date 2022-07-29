@@ -17,7 +17,7 @@ function TopBar(props) {
         <span className="App-title">
                 Second-hand Market Web React-based App
         </span>
-        {isLoggedIn ? <span><Button onClick={toUserProfile}>Profile</Button>
+        {isLoggedIn ? <span><Button onClick={toUserProfile}>Me</Button>
             <LogoutOutlined className='logout' onClick={handleLogout}/></span>
             : null}
     </header>);
