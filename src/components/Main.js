@@ -31,6 +31,7 @@ function Main(props) {
                 ? <PersonalProfile setShowProfile={props.setShowProfile}/>
                 : (<Login handleLoggedIn={handleLoggedIn}/>)
     }
+
     return (
         <div className="main">
             <Switch>

@@ -30,6 +30,8 @@ function PersonalProfile(props) {
     const decoded = jwt_decode(token);
     const [userProfile, setUserProfile] = useState([]);
     const [userOrderHistory, setUserOrderHistory] = useState([]);
+    const [product, setProduct] = useState([]);
+    const [client, setClient] = useState([]);
 
     // fetching state
     const [stillFetching, setStillFetching] = useState(true);
@@ -39,11 +41,31 @@ function PersonalProfile(props) {
         fetchUserOrderHistory();
     }, []);
 
-    // useEffect(()=>{
-    //
-    // },[userProfile]);
+    useEffect(() => {
+        fetchDetail();
+        setStillFetching(false);
+    },[userOrderHistory]);
+
+    const fetchUserProfile = () => {
+        const opt = {
+            method: "GET",
+            url: `${BASE_URL}/user-check/${decoded.ID}`,
+        };
+
+        axios(opt)
+            .then((res) => {
+                if (res.status === 200) {
+                    setUserProfile(res.data);
+                }
+            })
+            .catch((err) => {
+                message.error("Fetch posts failed!").then();
+                console.log("fetch posts failed: ", err.message);
+            });
+    };
 
     const fetchUserOrderHistory = () => {
+        // setStillFetching(prevState => !prevState);
         const opt = {
             method: "GET",
             url: `${BASE_URL}/order-history`,
@@ -56,7 +78,7 @@ function PersonalProfile(props) {
             .then((res) => {
                 if (res.status === 200) {
                     setUserOrderHistory(res.data);
-                    setStillFetching(false)
+                    // setStillFetching(prevState => !prevState);
                 }
             })
             .catch((err) => {
@@ -64,25 +86,63 @@ function PersonalProfile(props) {
                 console.log("fetch posts failed: ", err.message);
             });
     }
-    const fetchUserProfile = () => {
+
+    const fetchDetail = () => {
+        console.log("zuoshi");
+        userOrderHistory.map((order) => {
+            console.log("zuoshi");
+            if (order.SellerId === userProfile.ID) {
+                console.log("zuoshi");
+                getClient(order.BuyerId);
+            } else {
+                getClient(order.SellerId);
+            }
+            getProduct(order.ProductId)
+        });
+    }
+
+    const getClient = (ID) => {
         const opt = {
             method: "GET",
-            url: `${BASE_URL}/user-check/${decoded.ID}`,
+            url: `${BASE_URL}/user-check/${ID}`,
         };
 
         axios(opt)
             .then((res) => {
                 if (res.status === 200) {
-                    setUserProfile(res.data);
-                    setStillFetching(false)
+                    setClient(prevState => [...prevState, res.data.UserName])
+                    // setStillFetching(false)
                 }
             })
             .catch((err) => {
                 message.error("Fetch posts failed!").then();
                 console.log("fetch posts failed: ", err.message);
             });
-    };
+    }
 
+
+    const getProduct = (ID) => {
+        // setStillFetching(prevState => !prevState);
+        const opt = {
+            method: "GET",
+            url: `${BASE_URL}/product/${ID}`,
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem(TOKEN_KEY)}`
+            }
+        };
+
+        axios(opt)
+            .then((res) => {
+                if (res.status === 200) {
+                    setProduct(prevState => [...prevState, res.data.ProductName]);
+                    // setStillFetching(prevState => !prevState);
+                }
+            })
+            .catch((err) => {
+                message.error("Fetch posts failed!");
+                console.log("fetch posts failed: ", err.message);
+            });
+    }
     // define the list style
     const Demo = styled('div')(({theme}) => ({
         backgroundColor: theme.palette.background.paper,
@@ -96,19 +156,54 @@ function PersonalProfile(props) {
         color: theme.palette.text.secondary,
     }));
 
-    const sellOrBuy = (value) => {
+    const sellOrBuy = (value, index) => {
         if (value.BuyerId === decoded.ID) {
-            return ("From" + "    " + value.SellerId);
+            return ("From" + "    " + client[index]);
         } else {
-            return "To" + value.BuyerId;
+            return "To" + client[index];
         }
     }
 
-    const orderList = userOrderHistory.map((value) =>
+    const [currentDeleteOrder, setCurrentDeleteOrder] = useState();
+
+    useEffect(() => {
+        cancelOrder();
+    }, [currentDeleteOrder]);
+
+    const cancelOrder = () => {
+        setStillFetching(true);
+        const opt = {
+            method: "POST",
+            url: `${BASE_URL}/order-cancel/${currentDeleteOrder}`,
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem(TOKEN_KEY)}`
+            },
+        };
+        console.log(opt);
+
+        axios(opt)
+            .then((res) => {
+                if (res.status === 200) {
+                    message.success("Order cancel success").then(setStillFetching(false));
+                }
+            })
+            .catch((err) => {
+                if (currentDeleteOrder == null) {
+                    return;
+                }
+                message.error("Order cancel failed!").then();
+                console.log("Order cancel failed! ", err.message);
+            });
+    }
+
+
+    const orderList = userOrderHistory.map((value, index) =>
+
         <ListItem
             secondaryAction={
+
                 <IconButton edge="end" aria-label="delete">
-                    <DeleteIcon/>
+                    <DeleteIcon onClick={() => setCurrentDeleteOrder(value.ID)}/>
                 </IconButton>
             }
         >
@@ -117,9 +212,10 @@ function PersonalProfile(props) {
                     <FolderIcon/>
                 </Avatar>
             </ListItemAvatar>
+
             <ListItemText
-                primary={value.ProductId}
-                secondary={sellOrBuy(value)}
+                primary={product[index] + " ：" + "status" + " => " + value.State}
+                secondary={sellOrBuy(value, index)}
             />
         </ListItem>
     )
@@ -159,7 +255,7 @@ function PersonalProfile(props) {
                                         primary="User Name"
                                         secondary={
                                             <React.Fragment>
-                                                {userProfile.UserName}$
+                                                {userProfile.UserName}
                                             </React.Fragment>
                                         }
                                     />
