@@ -14,7 +14,7 @@ function Home(props) {
     const [posts, setPost] = useState([]);
 
     // this is the product index from the photoGallery
-    const [curProduct, setCurProduct] = useState([]);
+    const [curProduct, setCurProduct] = useState([0]);
 
     // search option is a wrapper include a keyword
     const [searchOption, setSearchOption] = useState({
@@ -86,7 +86,8 @@ function Home(props) {
                     };
                 });
             if (!showDetail) {
-                return <PhotoGallery images={imageArr} setproduct={setCurProduct} setShowDetail={setShowDetail}/>;
+                return <PhotoGallery images={imageArr} setproduct={setCurProduct} setShowDetail={setShowDetail}
+                                     product={product}/>;
             } else {
                 return <ProductDetail productId={product.ID} setShowDetail={setShowDetail}/>
             }

@@ -44,7 +44,7 @@ function PersonalProfile(props) {
     useEffect(() => {
         fetchDetail();
         setStillFetching(false);
-    },[userOrderHistory]);
+    }, [userOrderHistory]);
 
     const fetchUserProfile = () => {
         const opt = {
@@ -73,10 +73,11 @@ function PersonalProfile(props) {
                 Authorization: `Bearer ${localStorage.getItem(TOKEN_KEY)}`
             }
         };
-
+        console.log(localStorage.getItem(TOKEN_KEY));
         axios(opt)
             .then((res) => {
                 if (res.status === 200) {
+                    console.log(res.data);
                     setUserOrderHistory(res.data);
                     // setStillFetching(prevState => !prevState);
                 }
@@ -88,11 +89,8 @@ function PersonalProfile(props) {
     }
 
     const fetchDetail = () => {
-        console.log("zuoshi");
         userOrderHistory.map((order) => {
-            console.log("zuoshi");
             if (order.SellerId === userProfile.ID) {
-                console.log("zuoshi");
                 getClient(order.BuyerId);
             } else {
                 getClient(order.SellerId);
@@ -139,7 +137,7 @@ function PersonalProfile(props) {
                 }
             })
             .catch((err) => {
-                message.error("Fetch posts failed!");
+                message.error("Fetch posts failed!").then();
                 console.log("fetch posts failed: ", err.message);
             });
     }
@@ -196,6 +194,46 @@ function PersonalProfile(props) {
             });
     }
 
+    const StatusChange = (value, index) => {
+        if (value.BuyerId === decoded.ID) {
+            return (<Button variant="contained"
+                            onClick={() => {
+                                sendStatusChangeRequest("completed", value.ID)
+                            }} disabled={value.State==="pending"||value.State==="canceled"||value.State==="completed"}>Confirm received</Button>)
+        } else {
+            return (<Button variant="contained"
+                            onClick={() => {
+                                sendStatusChangeRequest("shipped", value.ID,index)} }
+                            disabled={value.State==="shipped"||value.State==="canceled"||value.State==="completed"}>Send Confirmed</Button>)
+        }
+    }
+
+    const sendStatusChangeRequest = ((status, Id) => {
+        const opt = {
+            method: "POST",
+            url: `${BASE_URL}/order-state-change/${Id}`,
+            data: {State: status},
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem(TOKEN_KEY)}`
+            }
+        };
+        setStillFetching(true);
+
+        console.log(opt);
+        axios(opt)
+            .then((res) => {
+                if (res.status === 200) {
+                    message.success("Success").then();
+                    window.location.reload(false);
+                    setStillFetching(false);
+                }
+            })
+            .catch((err) => {
+                message.error("Fetch posts failed!").then();
+                console.log("fetch posts failed: ", err.message);
+                setStillFetching(false);
+            });
+    })
 
     const orderList = userOrderHistory.map((value, index) =>
 
@@ -217,6 +255,8 @@ function PersonalProfile(props) {
                 primary={product[index] + " ：" + "status" + " => " + value.State}
                 secondary={sellOrBuy(value, index)}
             />
+            {StatusChange(value, index)}
+
         </ListItem>
     )
 

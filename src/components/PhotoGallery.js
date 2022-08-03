@@ -5,6 +5,7 @@ import {DeleteOutlined} from "@ant-design/icons";
 import Gallery from 'react-grid-gallery';
 import {BASE_URL, TOKEN_KEY} from "../constants";
 import axios from "axios";
+import jwt_decode from "jwt-decode";
 
 
 const captionStyle = {
@@ -31,7 +32,8 @@ const wrapperStyle = {
 function PhotoGallery(props) {
     const [images, setImages] = useState(props.images);
     const [curImgIdx, setCurImgIdx] = useState(0);
-
+    const token = localStorage.getItem(TOKEN_KEY);
+    const decoded = jwt_decode(token);
 
     const imagaArr = images.map(image => {
         return {
@@ -46,44 +48,47 @@ function PhotoGallery(props) {
 
 
     const onCurrentImageChange = (index) => {
-        console.log("curIdx ", index);
         setCurImgIdx(index);
     };
 
-    // not implement
+
     const onDeleteImage = () => {
+        props.setproduct(curImgIdx);
         if (window.confirm(`Are you sure you want to delete this Product?`)) {
-            const curImg = images[curImgIdx];
-            const newImageArr = images.filter((img, index) => index !== curImgIdx);
-            console.log("delete image ", newImageArr);
+            const curProduct = props.product;
+            console.log("delete product ", curProduct);
             const opt = {
-                method: "DELETE",
-                url: `${BASE_URL}/post/${curImg.postId}`,
+                method: "POST",
+                url: `${BASE_URL}/product-state-change/${curProduct.ID}`,
+                data: {
+                    State: "hidden"
+                },
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem(TOKEN_KEY)}`
                 }
             };
-
+            console.log(opt);
             axios(opt)
                 .then((res) => {
                     console.log("delete result -> ", res);
-                    // case1: success
                     if (res.status === 200) {
-                        // step1: set state
-                        setImages(newImageArr);
+                        message.success("Cancel Product success!").then();
+                        window.location.reload(false);
                     }
                 })
                 .catch((err) => {
                     // case2: fail
-                    message.error("Fetch posts failed!");
+                    message.error("Fetch posts failed!").then();
                     console.log("fetch posts failed: ", err.message);
                 });
         }
     };
 
+    useEffect(() => {
+        props.setproduct(curImgIdx);
+    }, [curImgIdx])
 
     const ShowDetail = () => {
-        props.setproduct(curImgIdx);
         // history.push("/product");
         props.setShowDetail(true);
     }
@@ -100,16 +105,19 @@ function PhotoGallery(props) {
                 backdropClosesModal={true}
                 currentImageWillChange={onCurrentImageChange}
                 customControls={[
-                    <div><button
-                        style={{marginTop: "10px", marginLeft: "5px"}}
-                        key="deleteImage"
-                        type="primary"
-                        icon={<DeleteOutlined/>}
-                        size="small"
-                        onClick={onDeleteImage}
-                    >
-                        Delete Image
-                    </button>,
+                    <div>
+                        <button
+                            style={{marginTop: "10px", marginLeft: "5px"}}
+                            key="deleteImage"
+                            type="primary"
+                            icon={<DeleteOutlined/>}
+                            size="small"
+                            onClick={onDeleteImage}
+                            disabled={props.product.UserId !== decoded.ID}
+                        >
+                            Cancel Product
+                        </button>
+                        ,
                         <button
                             onClick={ShowDetail}
                         >

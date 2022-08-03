@@ -51,7 +51,7 @@ function ProductDetail(props) {
                 }
             })
             .catch((err) => {
-                message.error("Fetch posts failed!");
+                message.error("Fetch posts failed!").then();
                 console.log("fetch posts failed: ", err.message);
             });
     };
