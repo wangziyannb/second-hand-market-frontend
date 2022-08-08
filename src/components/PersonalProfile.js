@@ -195,16 +195,21 @@ function PersonalProfile(props) {
     }
 
     const StatusChange = (value, index) => {
+        //depend on seller or buyer, give different button
         if (value.BuyerId === decoded.ID) {
             return (<Button variant="contained"
                             onClick={() => {
                                 sendStatusChangeRequest("completed", value.ID)
-                            }} disabled={value.State==="pending"||value.State==="canceled"||value.State==="completed"}>Confirm received</Button>)
+                            }}
+                            disabled={value.State === "pending" || value.State === "canceled" || value.State === "completed"}>Confirm
+                received</Button>)
         } else {
             return (<Button variant="contained"
                             onClick={() => {
-                                sendStatusChangeRequest("shipped", value.ID,index)} }
-                            disabled={value.State==="shipped"||value.State==="canceled"||value.State==="completed"}>Send Confirmed</Button>)
+                                sendStatusChangeRequest("shipped", value.ID, index)
+                            }}
+                            disabled={value.State === "shipped" || value.State === "canceled" || value.State === "completed"}>Send
+                Confirmed</Button>)
         }
     }
 
@@ -236,7 +241,7 @@ function PersonalProfile(props) {
     })
 
     const orderList = userOrderHistory.map((value, index) =>
-
+        // value is the order item
         <ListItem
             secondaryAction={
 
@@ -322,8 +327,6 @@ function PersonalProfile(props) {
                                         }
                                     />
                                 </ListItem>
-
-                                {/*<OrderMake confirmLoading={confirmLoading} handleOk={submit}/>*/}
 
                             </List></Item>
 
